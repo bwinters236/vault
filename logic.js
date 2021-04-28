@@ -9,6 +9,26 @@ var parks = [];
 var campMarkers = L.markerClusterGroup();
 var parkMarkers = L.markerClusterGroup();
 
+var parkIcon = L.Icon.extend({
+  options: {
+      iconSize:     [32, 37],
+      iconAnchor:   [16, 37],
+      popupAnchor:  [0, -45]
+  }
+});
+var realParkIcon = new parkIcon({iconUrl: 'riparianhabitat.png'})
+
+var campIcon = L.Icon.extend({
+  options: {
+      iconSize:     [32, 37],
+      iconAnchor:   [16, 37],
+      popupAnchor:  [0, -45]
+  }
+});
+var realCampIcon = new campIcon({iconUrl: 'campfire-2.png'})
+
+
+
 // Testing objects, here for posterity
 // var tcg1 = {
 //   "name": "277 North Campground",
@@ -55,17 +75,11 @@ d3.json(parksURL).then((p_response) => {
   for (var i = 0; i < parks.length; i++) {
     // loop through the parks array, create a new marker, push it to the camps markers array
     parkMarkers.addLayer(
-      L.marker(parks[i].location)
+      L.marker(parks[i].location, {icon: realParkIcon})
       .bindPopup("<h2>" + parks[i].name + "</h2><h3>" + parks[i].designation + "</h3><p>" + parks[i].description + `</p><a href=${parks[i].pUrl}>` + parks[i].pUrl + "</a>")
     );
     
   }
-
-
-
-
-
-
 
 
                   // Feeding the api url into d3 and getting the JSON as a response
@@ -102,15 +116,12 @@ d3.json(parksURL).then((p_response) => {
                     };
 
 
-                    // markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
-                    // .bindPopup(response[i].descriptor));
-
 
 
                   for (var i = 0; i < camps.length; i++) {
                     // loop through the camps array, create a new marker, push it to the camps markers array
                     campMarkers.addLayer(
-                      L.marker(camps[i].location)
+                      L.marker(camps[i].location, {icon: realCampIcon})
                       .bindPopup("<h2>" + camps[i].name + "</h2><p>" + camps[i].description + "</p><h3>" + camps[i].reservationInfo + `</h3><a href=${camps[i].reservationUrl}>` + camps[i].reservationUrl + "</a>")
                     );
                     
@@ -153,8 +164,8 @@ d3.json(parksURL).then((p_response) => {
                   // Create map object and set defaults, lat/long for center of america
                   var myMap = L.map("map", {
                     center: [44.967243, -103.771556], 
-                    zoom: 5,
-                    layers: [dark, parkMarkers] 
+                    zoom: 4,
+                    layers: [dark, parkMarkers, campMarkers] 
                   });
 
                   // Pass our map layers into our layer control
@@ -165,4 +176,3 @@ d3.json(parksURL).then((p_response) => {
 
                   })
 })                  // everything must be in the d3 call, or async will not populate parks before using it to populate parkMarkers
-console.log(parks)
